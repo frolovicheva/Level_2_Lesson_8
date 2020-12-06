@@ -2,10 +2,10 @@ package client.controllers;
 
 import client.NetworkClient;
 import client.models.Network;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
 
 public class AuthDialogController {
 
@@ -43,4 +43,5 @@ public class AuthDialogController {
     public void setNetworkClient(NetworkClient networkClient) {
         this.networkClient = networkClient;
     }
+
 }

@@ -14,6 +14,8 @@ import client.models.Network;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class NetworkClient extends Application {
@@ -64,7 +66,7 @@ public class NetworkClient extends Application {
         Parent page = authLoader.load();
         authStage = new Stage();
 
-        authStage.setTitle("Авторизация");
+        authStage.setTitle ("Авторизация " );
         authStage.initModality(Modality.WINDOW_MODAL);
         authStage.initOwner(primaryStage);
         Scene scene = new Scene(page);
@@ -97,4 +99,8 @@ public class NetworkClient extends Application {
         chatController.setUsernameTitle(network.getUsername());
         network.waitMessage(chatController);
     }
+
+
+
+
 }
