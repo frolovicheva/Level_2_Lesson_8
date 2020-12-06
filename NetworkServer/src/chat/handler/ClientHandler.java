@@ -4,9 +4,8 @@ import chat.MyServer;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Set;
 import java.util.Timer;
-import java.util.TreeSet;
+
 
 import chat.auth.*;
 import clientserver.Command;
@@ -14,6 +13,8 @@ import clientserver.CommandType;
 import clientserver.commands.AuthCommandData;
 import clientserver.commands.PrivateMessageCommandData;
 import clientserver.commands.PublicMessageCommandData;
+
+
 
 public class ClientHandler {
 
@@ -27,13 +28,12 @@ public class ClientHandler {
         this.myServer = myServer;
         this.clientSocket = clientSocket;
 //        clientSocket.setSoTimeout(120000);
-//        new Timer().schedule();
+//        new Timer ().schedule();
     }
 
     public void handle() throws IOException {
         in = new ObjectInputStream(clientSocket.getInputStream());
         out = new ObjectOutputStream(clientSocket.getOutputStream());
-
 
         new Thread(() -> {
             try {
@@ -47,28 +47,27 @@ public class ClientHandler {
     }
 
     private void authentication() throws IOException {
-
-        while (true) {
+        long startTime = System.currentTimeMillis ();
+        while (System.currentTimeMillis () - startTime <= 120000) {
 
             Command command = readCommand();
-//            if (command == null) {
-//                continue;
-////                Set set = new TreeSet();
-//            }
             if (command.getType() == CommandType.AUTH) {
 
                 boolean isSuccessAuth = processAuthCommand(command);
                 if (isSuccessAuth) {
                     break;
                 }
-
             } else {
                 sendMessage(Command.authErrorCommand("Ошибка авторизации"));
-
             }
         }
-
+        if (!myServer.isUsernameBusy(clientUsername)) {
+            sendMessage(Command.authErrorCommand("Ошибка авторизации"));
+            System.err.println ("Время авторизации истекло!");
+            clientSocket.close ();
+        }
     }
+
 
     private boolean processAuthCommand(Command command) throws IOException {
         AuthCommandData cmdData = (AuthCommandData) command.getData();
@@ -82,7 +81,6 @@ public class ClientHandler {
                 sendMessage(Command.authErrorCommand("Логин уже используется"));
                 return false;
             }
-
             sendMessage(Command.authOkCommand(clientUsername));
             String message = String.format(">>> %s присоединился к чату", clientUsername);
             myServer.broadcastMessage(this, Command.messageInfoCommand(message, null));
